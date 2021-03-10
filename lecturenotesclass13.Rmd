@@ -169,7 +169,8 @@ We can quantify the variability of sample statistics using
 
 
 - This notion of saying something about a population parameter using 
-  only information from an observed sample is the crux of statistical inference, it is not limited to bootstrapping.
+  only information from an observed sample is the crux of statistical inference, 
+  it is not limited to bootstrapping.
 
 ---
 
@@ -253,10 +254,10 @@ Create a 95% bootstrap confidence interval for the population *mean* price of
 
 First, identify the following:
 
-- Population: 
-- Parameter of interest:
-- Sample:
-- Sample size:
+- Population:1-bedroom apartments in Manhattan
+- Parameter of interest: mean price of 1-bedroom apartments in Manhattan
+- Sample: 1-bedroom apartments in Manhattan
+- Sample size: n=20 1-bedroom apartments 
 
 To create our confidence interval, we'll follow the four-step bootstrap
 scheme outlined in the slides using functions from `infer`.
@@ -342,7 +343,15 @@ population *median* price of 1-bedroom apartments in Manhattan. Do this in a
 single code chunk with a single pipeline. Provide an interpretation of your result.
 
 ```{r practice_1}
-
+boot_medians <- manhattan %>% 
+  specify(response = rent) %>% 
+  generate(reps = 10000, type = "bootstrap") %>% 
+  calculate(stat = "median") %>%
+  summarise(
+    lb = quantile(stat, 0.025),
+    ub = quantile(stat, 0.975)
+  )
+boot_medians
 ```
 
 ### A confidence interval for the population proportion - $p$
@@ -351,10 +360,10 @@ Consider the mice radiation dataset. Suppose we want to compute a 95% confidence
 
 First, identify the following:
 
-- Population: 
-- Parameter of interest:
-- Sample:
-- Sample size:
+- Population: mice given treatment
+- Parameter of interest: proportion of mice that died while not on the treatment
+- Sample: mice given treatment
+- Sample size: n=522 mice
 
 ```{r boot_mice}
 boot_prop <- mice %>% 
@@ -372,6 +381,8 @@ ci_mice_died
 
 What does this mean?
 
+Somewhere between 69%-79.7% of the mice died while not on the treatment. 
+
 **Interpretation**:
 
 ```{r visualize_ci_mice}
@@ -384,22 +395,30 @@ visualise(boot_prop) +
 Consider the mice radiation results. Suppose we want to compute a 90% confidence interval for the proportion of mice that lived while on the treatment, regardless of the dose.
 
 ```{r practice_2_bootstrap}
-
+boot_prop_2 <- mice %>% 
+  filter(treat == 1) %>% 
+  mutate(died = if_else(died == 0, "yes", "no")) %>% 
+  specify(response = died, success = "yes") %>% 
+  generate(reps = 10000, type = "bootstrap") %>% 
+  calculate(stat = "prop")
 ```
 
 ```{r practice_2_ci}
-
+ci_mice_lived <- get_ci(boot_prop, level = .90)
+ci_mice_lived
 ```
 
 Visualizing our Resuts:
 
 ```{r practice_2_visualize}
-
+visualise(boot_prop_2) +
+  shade_ci(ci_mice_lived)
 ```
 
 
 Give an interpretation of your result.
 
+Somewhere between 69.7%-78.9% of the mice died while not on the treatment. 
 
 # References
 
