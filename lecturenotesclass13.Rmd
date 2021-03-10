@@ -147,6 +147,9 @@ were to take another random sample of 50 students, how many would you expect
 to be left handed? Would you be surprised if only 3 of them were left handed? 
 Would you be surprised if 40 of them were left handed?
 
+I'd expect around 5 to be left handed, give or take a few. I would be very 
+surprised if 40 were left handed, but not at all suprised if 3 were.
+
 ## Quantifying the variability of a sample statistic
 
 We can quantify the variability of sample statistics using
@@ -189,7 +192,7 @@ Consider 20 1-bedroom apartments that were randomly selected on
 Craigslist Manhattan from apartments listed as "by owner".
 
 ```{r data_manhattan}
-manhattan <- read_csv("~/manhattan.csv")
+manhattan <- read_csv("~/R/lecture-note-class-13-sophiejohnson23/manhattan.csv")
 ```
 
 Consider 3-10 day survival of mice randomized to various
